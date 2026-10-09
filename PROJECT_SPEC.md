@@ -72,3 +72,12 @@ src/types/invoice.ts                    ✅
 - **Phase 4** RTL/LTR engine, currency selector, payment QR block.
 - **Phase 5** Print CSS, PDF download, Dexie history, logo/signature Blobs.
 - **Phase 6** SEO pages.
+
+## 10. Print & Arabic design rules (learned from the redesign)
+- Print CSS must target the sheet's own classes. Never hide bare `header`, `nav` or `button` globally: the invoice's `<header>` and logo button live inside the sheet.
+- Use `@page { size: A4 portrait; margin: 12mm 10mm }` and zero sheet padding in print. Padding on the sheet only applies to the first and last page.
+- No `letter-spacing` and no `uppercase` on Arabic text. Letter-spacing breaks letter joining. The app sets `html[lang=ar] * { letter-spacing: 0 !important }`.
+- Items table: `table-layout: fixed` with percentage columns (42/10/17/10/17), numeric columns centered or end-aligned, `break-inside: avoid` on rows, `thead { display: table-header-group }`.
+- Tabular numbers (`tabular-nums`) for every amount. Cairo is the primary font for both languages (self-host via `next/font` in the Next.js build).
+- InstaPay: there is no verified public payment deep link. Do **not** invent `instapay.eg/pay?...`. Show the InstaPay address (IPA) as text, and let users paste the payload their InstaPay app generates into "Custom QR text".
+- Logo and stamp upload: downscale to 260 px on a canvas before storing (localStorage in the demo, Dexie Blob in the Next.js build).

@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BillZero — free invoice and quote maker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Geist:wght@400;600&display=swap">
+<style>
+:root{--bg:#eceef1;--pn:#fff;--tx:#1b2430;--mu:#6b7684;--bd:#dde1e6;--ac:#0f766e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0d1117;--pn:#161b22;--tx:#e6edf3;--mu:#8b949e;--bd:#2d333b}}
+:root[data-theme=dark]{--bg:#0d1117;--pn:#161b22;--tx:#e6edf3;--mu:#8b949e;--bd:#2d333b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 Cairo,Geist,system-ui,sans-serif}
+html[lang=ar] *{letter-spacing:0!important}
+.app{display:grid;grid-template-columns:292px 1fr;min-height:100vh}
+.side{background:var(--pn);border-inline-end:1px solid var(--bd);padding:18px;display:flex;flex-direction:column;gap:13px;position:sticky;top:0;height:100vh;overflow:auto}
+.logo{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.side label{display:block;font-size:12px;color:var(--mu);margin-bottom:4px}
+.side input:not([type=checkbox]),.side select{width:100%;padding:7px 9px;border:1px solid var(--bd);border-radius:7px;background:var(--bg);color:var(--tx);font:inherit}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ck{display:flex!important;gap:8px;align-items:center;color:var(--tx)!important;font-size:13px!important}
+.seg{display:flex;border:1px solid var(--bd);border-radius:7px;overflow:hidden}
+.seg.w{flex-wrap:wrap}.seg.w button{flex:1 1 50%}
+.seg button{flex:1;border:0;background:transparent;color:var(--tx);padding:7px 4px;font:inherit;cursor:pointer}
+.seg button.on{background:var(--ac);color:#fff}
+.btn,.pri,#reset{display:block;text-align:center;padding:9px;border-radius:7px;border:1px solid var(--bd);background:transparent;color:var(--tx);font:inherit;cursor:pointer;text-decoration:none}
+.pri{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
+.mu{color:var(--mu);font-size:12px;margin:0}
+:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+main{padding:12px 12px 40px;min-width:0}
+/* paper */
+.sheet{--a:#0f172a;--t:#059669;width:794px;min-height:1123px;margin:8px auto 12px;padding:18mm;background:#fff;color:#0f172a;box-shadow:0 25px 60px -15px #0000002e;border-radius:2px;display:flex;flex-direction:column;gap:24px;font-size:13px;line-height:1.5}
+.sheet[data-th=minimal]{--a:#111;--t:#111}
+.sheet[data-th=minimal] .num{font-family:"Geist Mono",ui-monospace,monospace}
+.sheet[data-th=executive]{--a:#064e3b;--t:#047857}
+.sheet[data-th=artisan]{--a:#92400e;--t:#b45309;background:#fffaf2}
+.sheet input,.sheet textarea{font:inherit;color:inherit;background:transparent;border:0;border-bottom:1px dashed transparent;width:100%;padding:2px 0;outline:0;resize:none;border-radius:0}
+.sheet input:hover,.sheet textarea:hover{border-bottom-color:#cbd5e1}
+.sheet input:focus,.sheet textarea:focus{border-bottom:1px solid var(--a)}
+.sheet ::placeholder{color:#94a3b8}
+.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;border-bottom:2px solid var(--a);padding-bottom:22px}
+.from{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.brand{display:flex;gap:12px;align-items:flex-start}.brand>div{flex:1;min-width:0}
+.logo{width:54px;height:54px;flex:none;border-radius:12px;background:var(--a);color:#fff;font:800 22px Cairo,sans-serif;border:0;display:grid;place-items:center;overflow:hidden;cursor:pointer;padding:0}
+.logo img{width:100%;height:100%;object-fit:contain;background:#fff}
+.big{font-size:18px!important;font-weight:700}
+.kv{display:grid;grid-template-columns:104px 1fr;align-items:center;gap:6px;font-size:12px}.kv span{color:#64748b}
+.ttl{width:224px;display:flex;flex-direction:column;gap:6px}
+.badge{align-self:flex-start;background:#f1f5f9;color:#1e293b;padding:3px 12px;border-radius:6px;font-size:12px;font-weight:700}
+.sheet .no{font-size:26px;font-weight:800;text-align:start}
+.card{display:grid;grid-template-columns:1fr 1fr;gap:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px}
+.card small{display:block;color:#94a3b8;font-size:11px;font-weight:600}.card .r{align-self:end}
+.items{width:100%;border-collapse:collapse;table-layout:fixed}
+.items th{background:#f8fafc;color:#475569;font-size:12px;font-weight:700;border-bottom:2px solid #e2e8f0;padding:10px 8px;text-align:start}
+.items td{padding:6px 8px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.items :is(th,td):nth-child(2),.items :is(th,td):nth-child(4){text-align:center}
+.items :is(th,td):nth-child(3),.items :is(th,td):nth-child(5){text-align:end}
+.items input.num{text-align:inherit}
+.num{font-variant-numeric:tabular-nums}
+.amt{font-weight:700}
+.items button{border:0;background:none;color:#a0a7b1;font-size:18px;cursor:pointer}.items button:hover{color:#c0392b}
+.add{margin:-12px 0 0;align-self:flex-start;border:1px dashed var(--a);background:none;color:var(--a);padding:5px 12px;border-radius:6px;font:inherit;cursor:pointer}
+.bot{display:grid;grid-template-columns:7fr 5fr;gap:24px;align-items:start;border-top:1px solid #e2e8f0;padding-top:20px}
+.pay{display:flex;gap:14px;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px}
+.qrbox{display:flex;flex-direction:column;align-items:center;gap:4px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:8px;font-size:10px;font-weight:700;color:#4338ca}
+#qr{width:88px;height:88px}
+#qr:empty{border:1px dashed #cbd5e1;border-radius:6px;display:grid;place-items:center}#qr:empty::before{content:"QR";color:#cbd5e1;font-size:12px}
+.pi{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0}.pi h4{margin:0 0 2px;font-size:13px}
+.hint{margin:0;font-size:10px;color:#94a3b8}
+.tot{width:100%;border-collapse:collapse}.tot td{padding:5px 0;color:#475569}.tot td:last-child{text-align:end;font-weight:700;color:#0f172a}
+.tot .grand td{font-size:16px;font-weight:800;border-top:2px solid var(--a);padding-top:10px;color:var(--t)}
+.ft{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;border-top:1px solid #f1f5f9;padding-top:14px;font-size:11px;color:#64748b}
+.terms{flex:1;max-width:62%}.terms b{display:block;color:#475569}
+.sg{width:170px;background:none;border:0;font:inherit;color:inherit;cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:center;padding:0}
+.sgbox{width:100%;height:72px;border-bottom:1px solid #94a3b8;display:grid;place-items:end center}.sgbox img{max-width:100%;max-height:68px}
+.zoom{display:flex;gap:6px;justify-content:center;align-items:center;font-size:12px;color:var(--mu)}
+.zoom button{border:1px solid var(--bd);background:var(--pn);color:var(--tx);border-radius:6px;padding:4px 10px;font:inherit;cursor:pointer}
+@media(max-width:900px){.app{grid-template-columns:1fr}.side{position:static;height:auto;border-inline-end:0;border-bottom:1px solid var(--bd)}}
+@media print{@page{size:A4 portrait;margin:12mm 10mm}html,body{background:#fff}.side,.np,.zoom{display:none!important}.app{display:block}main{padding:0}.sheet{zoom:1!important;width:auto;min-height:271mm;margin:0;padding:0;box-shadow:none;border-radius:0}.items tr,.pay,.tot{break-inside:avoid}.items thead{display:table-header-group}#qr:empty{border-color:transparent}#qr:empty::before{content:""}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="logo">🧾 BillZero</div>
+  <div><label data-t="typ"></label><div class="seg"><button data-set="type=invoice" data-t="invl"></button><button data-set="type=quote" data-t="quol"></button></div></div>
+  <div><label>Language / اللغة</label><div class="seg"><button data-set="lang=en">English</button><button data-set="lang=ar">العربية</button></div></div>
+  <div><label data-t="cur"></label><select data-s="cur"><option>USD</option><option>EUR</option><option>GBP</option><option>EGP</option><option>SAR</option><option>AED</option><option>KWD</option><option>QAR</option><option>JPY</option></select></div>
+  <div class="two"><div><label data-t="taxr"></label><input type="number" step="any" data-s="tax"></div><div><label data-t="gdp"></label><input type="number" step="any" data-s="gDisc"></div></div>
+  <div class="two"><div><label data-t="sh"></label><input type="number" step="any" data-s="ship"></div><div><label data-t="whr"></label><input type="number" step="any" data-s="wht"></div></div>
+  <label class="ck"><input type="checkbox" data-s="incl"><span data-t="incl"></span></label>
+  <label class="ck"><input type="checkbox" data-s="round"><span data-t="rnd"></span></label>
+  <div><label data-t="thm"></label><div class="seg w"><button data-set="theme=minimal">Swiss</button><button data-set="theme=modern">Slate</button><button data-set="theme=executive">Emerald</button><button data-set="theme=artisan">Artisan</button></div></div>
+  <div><label data-t="ipa"></label><input data-s="ipa" dir="ltr"></div><div><label data-t="iban"></label><input data-s="iban" dir="ltr"></div><div><label data-t="pay"></label><input data-s="pay" dir="ltr"></div>
+  <button class="pri" id="print" data-t="print"></button>
+  <a class="btn" id="wa" target="_blank" rel="noopener" data-t="wa"></a>
+  <button id="reset" data-t="rst"></button>
+  <p class="mu" data-t="priv"></p>
+</aside>
+<main>
+<div class="zoom np"><span data-t="zm"></span><button data-z="0.75">75%</button><button data-z="1">100%</button><button data-z="1.25">125%</button><button data-z="0">Fit</button></div>
+<div class="sheet" id="sheet">
+  <header class="hd">
+    <div class="from">
+      <div class="brand"><button class="logo" id="logo" title="Logo (Shift+click removes)" aria-label="Logo"><span id="logoL"></span><img id="logoI" alt="" hidden></button>
+        <div><input class="big" data-s="sender.name"><textarea rows="2" data-s="sender.addr"></textarea></div></div>
+      <div><div class="kv"><span data-t="ph"></span><input class="num" dir="auto" data-s="sender.phone" placeholder="+20 100 000 0000"></div><div class="kv"><span data-t="vat"></span><input class="num" dir="auto" data-s="sender.vat"></div></div>
+    </div>
+    <div class="ttl"><span class="badge" id="title"></span><input class="no num" data-s="number">
+      <div class="kv"><span data-t="iss"></span><input type="date" data-s="issue"></div>
+      <div class="kv"><span id="dueL"></span><input type="date" id="dd"></div></div>
+  </header>
+  <section class="card"><div><small data-t="to"></small><input class="big" data-s="client.name"><textarea rows="2" data-s="client.addr"></textarea><input class="num" dir="auto" data-s="client.phone" placeholder="2010…"></div>
+    <div class="r"><div class="kv"><span data-t="ctin"></span><input class="num" dir="auto" data-s="client.tin"></div></div></section>
+  <table class="items"><colgroup><col style="width:42%"><col style="width:10%"><col style="width:17%"><col style="width:10%"><col style="width:17%"><col class="np" style="width:4%"></colgroup>
+    <thead><tr><th data-t="desc"></th><th data-t="qty"></th><th data-t="pr"></th><th data-t="dc"></th><th data-t="amt"></th><th class="np"></th></tr></thead><tbody id="rows"></tbody></table>
+  <button class="add np" id="add" data-t="add"></button>
+  <section class="bot">
+    <div class="pay"><div class="qrbox"><div id="qr"></div><span id="qrl"></span></div>
+      <div class="pi"><h4 data-t="payh"></h4><div class="kv"><span data-t="ipa"></span><input class="num" dir="ltr" data-s="ipa"></div><div class="kv"><span data-t="iban"></span><input class="num" dir="ltr" data-s="iban"></div><p class="hint" data-t="scan"></p></div></div>
+    <table class="tot" id="tot"></table>
+  </section>
+  <footer class="ft"><div class="terms"><b data-t="trm"></b><textarea rows="3" data-s="notes"></textarea></div>
+    <button class="sg" id="stamp" aria-label="Signature and stamp"><div class="sgbox"><img id="stI" alt="" hidden></div><span id="sgl"></span></button></footer>
+</div>
+</main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const K='inv quo from to no iss due val desc qty pr dc amt sub gd tax sh wh rd tot nt sg add vat typ cur taxr incl gdp whr rnd thm pay print wa rst priv invl quol ph ctin payh ipa iban scan trm sgl zm'.split(' ');
+const EN='INVOICE|QUOTE|From|Bill to|No.|Issue date|Due date|Valid until|Description|Qty|Unit price|Disc %|Amount|Subtotal|Discount|VAT|Shipping|Withholding|Rounding|Total|Notes|Approval signature|+ Add item|VAT / Tax No.|Document|Currency|Tax rate %|Prices include tax|Global discount %|Withholding tax %|Round total to whole unit|Theme|Custom QR text (InstaPay payload, PayPal link…)|Print / Save PDF|Send via WhatsApp|New document|Saved in your browser only. No account, no watermark.|Invoice|Quote|Phone / WhatsApp|Client tax no.|Payment details|InstaPay address|IBAN / account no.|Scan with your banking app to pay.|Terms & conditions|Authorized signature & stamp|Zoom';
+const AR='فاتورة|عرض أسعار|من|فاتورة إلى|رقم|تاريخ الإصدار|تاريخ الاستحقاق|صالح حتى|الوصف|الكمية|سعر الوحدة|خصم %|المبلغ|المجموع الفرعي|الخصم|ضريبة القيمة المضافة|الشحن|خصم الأرباح التجارية|التقريب|الإجمالي|ملاحظات|توقيع الموافقة|+ إضافة بند|الرقم الضريبي|نوع المستند|العملة|نسبة الضريبة %|الأسعار شاملة الضريبة|خصم عام %|نسبة الخصم من المنبع %|تقريب الإجمالي لرقم صحيح|القالب|نص رمز مخصص (بيانات إنستاباي، رابط PayPal…)|طباعة / حفظ PDF|إرسال عبر واتساب|مستند جديد|يُحفظ في متصفحك فقط. بلا حساب وبلا علامة مائية.|فاتورة|عرض أسعار|الهاتف / واتساب|الرقم الضريبي للعميل|بيانات الدفع|عنوان إنستاباي|رقم الحساب / IBAN|امسح الرمز بتطبيق البنك للدفع.|الشروط والأحكام|التوقيع والختم المعتمد|التكبير';
+const D={en:{},ar:{}};[EN,AR].forEach((s,j)=>s.split('|').forEach((v,i)=>D[j?'ar':'en'][K[i]]=v));
+let S;const t=k=>D[S.lang][k];
+
+/* money engine: integer minor units (same rules as calculations.ts) */
+const dig=c=>{try{return new Intl.NumberFormat('en',{style:'currency',currency:c}).resolvedOptions().maximumFractionDigits}catch{return 2}};
+const rh=x=>Math.sign(x)*Math.round(Math.abs(x));
+const tm=(v,d)=>{v=+v||0;const s=String(v);return s.includes('e')?rh(v*10**d):rh(Number(s+'e'+d))};
+const clamp=(v,a,b)=>Math.min(Math.max(+v||0,a),b);
+const pct=(a,r)=>rh(a*(+r||0)/100);
+function alloc(tt,w){const s=w.reduce((a,b)=>a+b,0);if(tt<=0||s<=0)return w.map(()=>0);const r=w.map(x=>tt*x/s),p=r.map(Math.floor);const m=tt-p.reduce((a,b)=>a+b,0);r.map((x,i)=>[i,x-Math.floor(x)]).sort((a,b)=>b[1]-a[1]||a[0]-b[0]).slice(0,m).forEach(([i])=>p[i]++);return p}
+function calc(S){const d=dig(S.cur);
+  const L=S.items.map(i=>{const g=rh((+i.q||0)*tm(i.p,d));const ds=g>0?Math.min(pct(g,clamp(i.disc,0,100)),g):0;return{a:g-ds}});
+  const sub=L.reduce((s,l)=>s+l.a,0);
+  const gd=sub>0?Math.min(pct(sub,clamp(S.gDisc,0,100)),sub):0;
+  const sh=alloc(gd,L.map(l=>Math.max(l.a,0)));let net=0,tax=0;
+  L.forEach((l,i)=>{const a=l.a-sh[i],r=+S.tax||0;let n,x;if(S.incl){n=rh(a*100/(100+r));x=a-n}else{n=a;x=pct(a,r)}net+=n;tax+=x});
+  const ship=Math.max(tm(S.ship,d),0),w=pct(net,S.wht),pre=net+tax+ship-w;let rd=0;
+  if(S.round){const u=10**d;rd=rh(pre/u)*u-pre}
+  return{d,L,sub,gd,net,tax,ship,w,rd,total:pre+rd}}
+const tlv=(g,v)=>{const b=new TextEncoder().encode(v);return[g,b.length,...b]};
+const zatca=(n,v,ts,tot,vat)=>btoa(String.fromCharCode(...[tlv(1,n),tlv(2,v),tlv(3,ts),tlv(4,tot),tlv(5,vat)].flat()));
+
+/* state */
+const KEY='billzero-draft-v1';
+const def=()=>({type:'invoice',lang:'en',cur:'EGP',theme:'modern',tax:14,incl:false,gDisc:0,ship:0,wht:0,round:false,number:'INV-0001',issue:new Date().toISOString().slice(0,10),due:'',valid:'',sender:{name:'Nile Studio',addr:'12 Tahrir St, Cairo',phone:'',vat:''},client:{name:'Acme Trading Co.',addr:'Giza, Egypt',phone:'',tin:''},items:[{d:'Brand identity design',q:1,p:12000,disc:0},{d:'Landing page build',q:1,p:8500,disc:10},{d:'Social media kit (hours)',q:6,p:350,disc:0}],notes:'This document is valid for 14 days from the issue date. Payment is due on approval of the work.',pay:'',ipa:'',iban:'',logo:'',stamp:''});
+try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch{S=def()}
+const gp=(o,p)=>p.split('.').reduce((a,k)=>a?.[k],o);
+const sp=(o,p,v)=>{const k=p.split('.'),l=k.pop();k.reduce((a,x)=>a[x],o)[l]=v};
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+function fill(){$$('[data-s]').forEach(e=>{const v=gp(S,e.dataset.s);e.type==='checkbox'?e.checked=!!v:e.value=v??''})}
+function rows(){$('#rows').innerHTML=S.items.map((i,n)=>`<tr><td><input data-f="d" value="${esc(i.d)}"></td><td><input data-f="q" type="number" step="any" class="num" value="${i.q}"></td><td><input data-f="p" type="number" step="any" class="num" value="${i.p}"></td><td><input data-f="disc" type="number" step="any" class="num" value="${i.disc}"></td><td class="amt num"></td><td class="np"><button data-del="${n}" aria-label="Remove">×</button></td></tr>`).join('')}
+
+function up(){
+  const R=calc(S),d=R.d,ar=S.lang==='ar',q=S.type==='quote';
+  const f=m=>new Intl.NumberFormat(ar?'ar-u-nu-latn':'en',{style:'currency',currency:S.cur}).format(m/10**d);
+  document.documentElement.lang=S.lang;document.documentElement.dir=ar?'rtl':'ltr';
+  $$('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
+  $('#sheet').dataset.th=S.theme;
+  $('#title').textContent=t(q?'quo':'inv');$('#dueL').textContent=t(q?'val':'due');
+  const dk=q?'valid':'due';$('#dd').dataset.s=dk;if($('#dd').value!==(S[dk]||''))$('#dd').value=S[dk]||'';
+  $('#sgl').textContent=t(q?'sg':'sgl');
+  [['logo','#logoI'],['stamp','#stI']].forEach(([k,sel])=>{const im=$(sel);im.hidden=!S[k];if(S[k]&&im.getAttribute('src')!==S[k])im.src=S[k]});
+  $('#logoL').hidden=!!S.logo;$('#logoL').textContent=((S.sender.name||'').trim().charAt(0)||'N');
+  $$('#rows tr').forEach((tr,i)=>tr.querySelector('.amt').textContent=f(R.L[i].a));
+  const r=(k,v,c='')=>`<tr class="${c}"><td>${k}</td><td class="num">${v}</td></tr>`;
+  let h=r(t('sub'),f(R.sub));
+  if(R.gd)h+=r(t('gd')+' '+(+S.gDisc||0)+'%','−'+f(R.gd));
+  if(+S.tax)h+=r(t('tax')+' '+S.tax+'%'+(S.incl?(ar?' (شامل)':' (incl.)'):''),f(R.tax));
+  if(R.ship)h+=r(t('sh'),f(R.ship));
+  if(R.w)h+=r(t('wh')+' '+S.wht+'%','−'+f(R.w));
+  if(R.rd)h+=r(t('rd'),f(R.rd));
+  $('#tot').innerHTML=h+r(t('tot'),f(R.total),'grand');
+  const msg=ar?`${q?'عرض أسعار':'فاتورة'} رقم ${S.number} بقيمة ${f(R.total)} جاهز. شكراً لتعاملكم معنا!`:`${q?'Quote':'Invoice'} ${S.number} for ${f(R.total)} is ready. Thank you for your business!`;
+  $('#wa').href='https://wa.me/'+(S.client.phone||'').replace(/\D/g,'')+'?text='+encodeURIComponent(msg);
+  let txt='',lab='';
+  if(S.cur==='SAR'&&/^3\d{13}3$/.test(S.sender.vat)){const m=x=>(x/10**d).toFixed(d);txt=zatca(S.sender.name,S.sender.vat,S.issue+'T00:00:00Z',m(R.net+R.tax+R.ship),m(R.tax));lab='ZATCA'}
+  else if((S.pay||'').trim()){txt=S.pay.trim();lab=ar?'رمز الدفع':'Pay'}else if((S.ipa||'').trim()){txt=S.ipa.trim();lab='InstaPay'}else if((S.iban||'').trim()){txt=S.iban.trim();lab='IBAN'}
+  const qe=$('#qr');if(txt!==qe.dataset.t){qe.dataset.t=txt;qe.innerHTML='';if(txt&&window.QRCode)try{new QRCode(qe,{text:txt,width:88,height:88,correctLevel:QRCode.CorrectLevel.M})}catch{}}
+  $('#qrl').textContent=lab;
+  $$('[data-set]').forEach(b=>{const[k,v]=b.dataset.set.split('=');b.classList.toggle('on',S[k]===v)});
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}
+}
+let Z=0;function fit(){const w=$('main').clientWidth-24;$('#sheet').style.zoom=Z||Math.min(1,w/794)}
+
+document.addEventListener('input',e=>{const el=e.target,p=el.dataset.s;
+  if(p){sp(S,p,el.type==='checkbox'?el.checked:el.value);up()}
+  else if(el.dataset.f){S.items[el.closest('tr').rowIndex-1][el.dataset.f]=el.value;up()}});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-set]'),x=e.target.closest('[data-del]');
+  if(b){const[k,v]=b.dataset.set.split('=');S[k]=v;if(k==='type')S.number=S.number.replace(/^(INV|QT)-/,v==='invoice'?'INV-':'QT-');fill();up()}
+  if(x){if(S.items.length>1)S.items.splice(+x.dataset.del,1);rows();up()}});
+document.addEventListener('click',e=>{const z=e.target.closest('[data-z]');if(z){Z=+z.dataset.z;fit()}});
+function pick(k,e){if(e.shiftKey){S[k]='';up();return}const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>{const f=i.files[0];if(!f)return;const im=new Image();im.onload=()=>{const r=Math.min(1,260/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*r;c.height=im.height*r;c.getContext('2d').drawImage(im,0,0,c.width,c.height);S[k]=c.toDataURL('image/png');up()};im.src=URL.createObjectURL(f)};i.click()}
+$('#logo').onclick=e=>pick('logo',e);$('#stamp').onclick=e=>pick('stamp',e);
+$('#add').onclick=()=>{S.items.push({d:'',q:1,p:0,disc:0});rows();up()};
+$('#print').onclick=()=>window.print();
+$('#reset').onclick=()=>{S=def();fill();rows();up()};
+addEventListener('resize',fit);
+rows();fill();up();fit();
+</script>
+</body>
+</html>
